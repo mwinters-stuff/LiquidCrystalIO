@@ -54,8 +54,6 @@ const int rs = 24, en = 25, d4 = 26, d5 = 27, d6 = 28, d7 = 29;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7, outputOnlyFromShiftRegister(WRITE_CLOCK_PIN, WRITE_DATA_PIN, WRITE_LATCH_PIN));
 
 void setup() {
-	pinMode(2, OUTPUT);
-	analogWrite(2, 5);
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   // Print a message to the LCD.
