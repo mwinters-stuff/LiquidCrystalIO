@@ -44,11 +44,6 @@
 #include <LiquidCrystal.h>
 #include <Wire.h>
 
-#define WRITE_CLOCK_PIN 22
-#define WRITE_DATA_PIN 23
-#define WRITE_LATCH_PIN 24
-
-
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
 const int rs = 1, en = 2, d4 = 3, d5 = 4, d6 = 5, d7 = 6;
