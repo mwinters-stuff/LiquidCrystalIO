@@ -1,6 +1,8 @@
 #ifndef LiquidCrystal_h
 #define LiquidCrystal_h
 
+#include <BasicIoAbstraction.h>
+
 #include <inttypes.h>
 #include "Print.h"
 
@@ -46,18 +48,18 @@ class LiquidCrystal : public Print {
 public:
   LiquidCrystal(uint8_t rs, uint8_t enable,
 		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-		uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7);
+		uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7, BasicIoAbstraction* ioMethod = NULL);
   LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
 		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-		uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7);
+		uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7, BasicIoAbstraction* ioMethod = NULL);
   LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
-		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3);
+		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, BasicIoAbstraction* ioMethod = NULL);
   LiquidCrystal(uint8_t rs, uint8_t enable,
-		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3);
+		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, BasicIoAbstraction* ioMethod = NULL);
 
   void init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t enable,
 	    uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-	    uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7);
+	    uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7, BasicIoAbstraction* ioMethod);
     
   void begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS);
 
@@ -103,6 +105,8 @@ private:
 
   uint8_t _numlines;
   uint8_t _row_offsets[4];
+  
+  BasicIoAbstraction* _io_method;
 };
 
 #endif
