@@ -52,25 +52,22 @@
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
 const int rs = 1, en = 2, d4 = 3, d5 = 4, d6 = 5, d7 = 6;
-LiquidCrystal* lcd;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7, ioFrom8754(0x20));
 
 void setup() {
-	lcd = new LiquidCrystal(rs, en, d4, d5, d6, d7, ioFrom8754(0x20));
-
-	pinMode(2, OUTPUT);
-	analogWrite(2, 5);
+	Wire.begin();
   // set up the LCD's number of columns and rows:
-  lcd->begin(16, 2);
+  lcd.begin(16, 2);
   // Print a message to the LCD.
-  lcd->print("hello, world!");
+  lcd.print("hello, world!");
 }
 
 void loop() {
   // set the cursor to column 0, line 1
   // (note: line 1 is the second row, since counting begins with 0):
-  lcd->setCursor(0, 1);
+  lcd.setCursor(0, 1);
   // print the number of seconds since reset:
-  lcd->print(millis() / 1000);
+  lcd.print(millis() / 1000);
   delay(1000);
   Serial.println("starting app");
 
