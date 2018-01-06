@@ -183,13 +183,13 @@ void LiquidCrystal::setRowOffsets(int row0, int row1, int row2, int row3)
 void LiquidCrystal::clear()
 {
   command(LCD_CLEARDISPLAY);  // clear display, set cursor position to zero
-  delayMicroseconds(2000);  // this command takes a long time!
+  taskManager.yieldForMicros(2000);  // this command takes a long time!
 }
 
 void LiquidCrystal::home()
 {
   command(LCD_RETURNHOME);  // set cursor position to zero
-  delayMicroseconds(2000);  // this command takes a long time!
+  taskManager.yieldForMicros(2000);  // this command takes a long time!
 }
 
 void LiquidCrystal::setCursor(uint8_t col, uint8_t row)
@@ -317,7 +317,7 @@ void LiquidCrystal::pulseEnable(void) {
   delayMicroseconds(1);    // enable pulse must be >450ns
   _io_method->writeValue(_enable_pin, LOW);
   _io_method->runLoop();
-  delayMicroseconds(100);   // commands need > 37us to settle
+  taskManager.yieldForMicros(100);   // commands need > 37us to settle
 }
 
 void LiquidCrystal::write4bits(uint8_t value) {
