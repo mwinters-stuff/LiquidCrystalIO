@@ -1,7 +1,7 @@
 #ifndef LiquidCrystal_h
 #define LiquidCrystal_h
 
-#include <BasicIoAbstraction.h>
+#include <IoAbstraction.h>
 
 #include <inttypes.h>
 #include "Print.h"
