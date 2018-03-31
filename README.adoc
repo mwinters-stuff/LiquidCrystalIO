@@ -1,6 +1,8 @@
-= Liquid Crystal Library for Arduino =
+= IoAbstraction Fork of Liquid Crystal Library for Arduino =
 
-This is a fork of the popular LiquidCrystal library for Arduino that supports my simple IO Abstraction framework - this means that without changing library, it works for ardino pins, shift registers and i2c based IO. 
+This is a fork of the popular LiquidCrystal library for Arduino that supports my simple IO Abstraction framework - this means that without changing library, it works for ardino pins, shift registers and i2c based IO. All delays in the library also use task managers yield function, meaning they do not hold up execution.
+
+Original text:
 
 As the underlying IO abstraction library is in BETA, this will remain as a fork for the time being. However, I will keep it up to date with the Arduino core library from time to time to ensure it is as similar as possible.
 
