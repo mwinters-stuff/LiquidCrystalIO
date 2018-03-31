@@ -4,8 +4,6 @@ This is a fork of the popular LiquidCrystal library for Arduino that supports my
 
 Original text:
 
-As the underlying IO abstraction library is in BETA, this will remain as a fork for the time being. However, I will keep it up to date with the Arduino core library from time to time to ensure it is as similar as possible.
-
 This library allows an Arduino board to control LiquidCrystal displays (LCDs) based on the Hitachi HD44780 (or a compatible) chipset, which is found on most text-based LCDs.
 
 For more information about this library please visit us at
