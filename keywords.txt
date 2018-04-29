@@ -1,12 +1,12 @@
 #######################################
-# Syntax Coloring Map For LiquidCrystal
+# Syntax Coloring Map For LiquidCrystalIO
 #######################################
 
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
 
-LiquidCrystal	KEYWORD1	LiquidCrystal
+LiquidCrystalIO	KEYWORD1	LiquidCrystalIO
 
 #######################################
 # Methods and Functions (KEYWORD2)
