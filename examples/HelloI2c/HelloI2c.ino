@@ -41,7 +41,7 @@
 */
 
 // include the library code:
-#include <LiquidCrystal.h>
+#include <LiquidCrystalIO.h>
 #include <Wire.h>
 
 // initialize the library by associating any needed LCD interface pin

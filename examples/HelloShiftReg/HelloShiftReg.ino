@@ -41,7 +41,7 @@
 */
 
 // include the library code:
-#include <LiquidCrystal.h>
+#include <LiquidCrystalIO.h>
 
 #define WRITE_CLOCK_PIN 22
 #define WRITE_DATA_PIN 23
