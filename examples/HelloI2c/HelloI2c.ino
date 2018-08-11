@@ -42,6 +42,7 @@
 
 // include the library code:
 #include <LiquidCrystalIO.h>
+#include <IoAbstractionWire.h>
 #include <Wire.h>
 
 // initialize the library by associating any needed LCD interface pin
