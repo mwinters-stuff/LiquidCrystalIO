@@ -298,7 +298,6 @@ void LiquidCrystal::send(uint8_t value, uint8_t mode) {
   if (_rw_pin != 255) { 
 	_io_method->writeValue(_rw_pin, LOW);
   }
-  _io_method->runLoop();
   
   if (_displayfunction & LCD_8BITMODE) {
     write8bits(value); 
@@ -324,8 +323,6 @@ void LiquidCrystal::write4bits(uint8_t value) {
   for (int i = 0; i < 4; i++) {
 	_io_method->writeValue(_data_pins[i], (value >> i) & 0x01);
   }
-  _io_method->runLoop();
-
   pulseEnable();
 }
 
@@ -333,7 +330,5 @@ void LiquidCrystal::write8bits(uint8_t value) {
   for (int i = 0; i < 8; i++) {
 	  _io_method->writeValue(_data_pins[i], (value >> i) & 0x01);
   }
-  _io_method->runLoop();
-  
   pulseEnable();
 }

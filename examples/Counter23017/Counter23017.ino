@@ -12,7 +12,7 @@
 
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
-const int rs = 12, en = 13, d4 = 8, d5 = 9, d6 = 10, d7 = 11;
+const int rs = 8, en = 9, d4 = 10, d5 = 11, d6 = 12, d7 = 13;
 
 // if you want to use the optional PWM contrast, you need to set the pin for it
 const int pwmContrastPin = 5;
