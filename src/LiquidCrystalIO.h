@@ -60,7 +60,12 @@ public:
   void init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t enable,
 	    uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
 	    uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7, BasicIoAbstraction* ioMethod);
-    
+  
+  void configureBacklightPin(uint8_t backlightPin);
+  void setBacklight(uint8_t state);
+  void backlight() { setBacklight(HIGH); }
+  void noBacklight() { setBacklight(LOW); }
+  
   void begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS);
 
   void clear();
@@ -105,6 +110,7 @@ private:
 
   uint8_t _numlines;
   uint8_t _row_offsets[4];
+  uint8_t _backlightPin;
   
   BasicIoAbstraction* _io_method;
 };

@@ -61,6 +61,7 @@ void LiquidCrystal::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t en
   _rs_pin = rs;
   _rw_pin = rw;
   _enable_pin = enable;
+  _backlightPin = 0xff;
   
   _data_pins[0] = d0;
   _data_pins[1] = d1;
@@ -80,6 +81,19 @@ void LiquidCrystal::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t en
   // underlying device is fully initialised. Fails completely for i2c.
   //begin(16, 1);  
 }
+
+void LiquidCrystal::configureBacklightPin(uint8_t backlightPin) {
+  _backlightPin = backlightPin;
+  ioDevicePinMode(_io_method, _backlightPin, OUTPUT);
+  backlight();
+}
+
+void LiquidCrystal::setBacklight(uint8_t state) {
+  if(_backlightPin == 0xff) return;
+
+  ioDeviceDigitalWrite(_io_method, _backlightPin, state);
+}
+
 
 void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
   if (lines > 1) {
