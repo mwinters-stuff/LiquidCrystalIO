@@ -44,7 +44,7 @@ LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
   init(1, rs, rw, enable, d0, d1, d2, d3, 0, 0, 0, 0, ioMethod);
 }
 
-LiquidCrystal::LiquidCrystal(uint8_t rs,  uint8_t enable,
+LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t enable,
 			     uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, BasicIoAbstraction* ioMethod)
 {
   init(1, rs, 255, enable, d0, d1, d2, d3, 0, 0, 0, 0, ioMethod);
@@ -55,9 +55,6 @@ void LiquidCrystal::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t en
 			 uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7, BasicIoAbstraction* ioMethod)
 {
 	// in the event of null, assume we will use arduino pins.
-
-	_io_method = (ioMethod) ? ioMethod : ioUsingArduino();
-
   _rs_pin = rs;
   _rw_pin = rw;
   _enable_pin = enable;
@@ -94,13 +91,13 @@ void LiquidCrystal::setBacklight(uint8_t state) {
   ioDeviceDigitalWrite(_io_method, _backlightPin, state);
 }
 
-
 void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
+  if(_io_method == NULL) _io_method = ioUsingArduino();
+
   if (lines > 1) {
     _displayfunction |= LCD_2LINE;
   }
   _numlines = lines;
-
   setRowOffsets(0x00, 0x40, 0x00 + cols, 0x40 + cols);  
 
   // for some 1 line displays you can select a 10 pixel high font
@@ -126,6 +123,7 @@ void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
   // before sending commands. Arduino can turn on way before 4.5V so we'll wait 50
   delayMicroseconds(50000); 
   // Now we pull both RS and R/W low to begin commands
+
   _io_method->writeValue(_rs_pin, LOW);
   _io_method->writeValue(_enable_pin, LOW);
   if (_rw_pin != 255) { 
