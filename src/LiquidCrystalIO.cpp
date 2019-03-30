@@ -59,6 +59,7 @@ void LiquidCrystal::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t en
   _rw_pin = rw;
   _enable_pin = enable;
   _backlightPin = 0xff;
+  _io_method = ioMethod;
   
   _data_pins[0] = d0;
   _data_pins[1] = d1;
