@@ -90,6 +90,7 @@ public:
 
   void setRowOffsets(int row1, int row2, int row3, int row4);
   void createChar(uint8_t, uint8_t[]);
+  void createCharPgm(uint8_t, const uint8_t[]);
   void setCursor(uint8_t, uint8_t); 
   virtual size_t write(uint8_t);
   void command(uint8_t);

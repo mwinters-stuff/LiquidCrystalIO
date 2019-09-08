@@ -290,6 +290,17 @@ void LiquidCrystal::createChar(uint8_t location, uint8_t charmap[]) {
   }
 }
 
+// Allows us to fill the first 8 CGRAM locations
+// with custom characters
+void LiquidCrystal::createCharPgm(uint8_t location, const uint8_t charmap[]) {
+  location &= 0x7; // we only have 8 locations 0-7
+  command(LCD_SETCGRAMADDR | (location << 3));
+  for (int i=0; i<8; i++) {
+    write(pgm_read_byte_near(&charmap[i]));
+  }
+}
+
+
 /*********** mid level commands, for sending data/cmds */
 
 inline void LiquidCrystal::command(uint8_t value) {
