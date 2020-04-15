@@ -15,7 +15,7 @@
  by Tom Igoe
  modified 7 Nov 2016
  by Arturo Guadalupi
-
+modified by Dave Cherry in 2018 to demo I2C backpack support.
  This example code is in the public domain.
 
  http://www.arduino.cc/en/Tutorial/LiquidCrystalHelloWorld
@@ -30,14 +30,22 @@
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to, there are two
 // common possibilities
+
+// set this according to your backpack. If it has RS on pin 0 set to true, otherwise false.
+// if unsure, try both! If it's really non standard, you can set the pins as needed!
+#define RS_RW_EN true
+
+#if RS_RW_EN == true
+// if the backpack you have has the RS pin on 0 and the EN pin on 2.
 const int rs = 0, rw = 1, en = 2, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
-//const int rs = 2, en = 0, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
+#else
+// if the backpack you have has the RS pin on 2 and the EN pin on 0.
+const int rs = 2, en = 0, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
+#endif
 LiquidCrystal lcd(rs, rw, en, d4, d5, d6, d7, ioFrom8574(0x20));
 
 void setup() {
-  pinMode(9, OUTPUT);
-  analogWrite(9, 10);
-
+  // most backpacks have the backlight on pin 3.
   lcd.configureBacklightPin(3);
   lcd.backlight();
   
@@ -45,15 +53,27 @@ void setup() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   // Print a message to the LCD.
-  lcd.print("hello, world!");
+  lcd.print("hello over i2c!");
+
+  //
+  // when using this version of liquid crystal, it interacts (fairly) nicely with task manager. 
+  // instead of doing stuff in loop, we can schedule things to be done. But just be aware than
+  // only one task can draw to the display. Never draw to the display in two tasks.
+  //
+  // You don't have to use the library with task manager like this, it's an option.
+  //
+  taskManager.scheduleFixedRate(250, [] {
+    // set the cursor to column 0, line 1
+    // (note: line 1 is the second row, since counting begins with 0):
+    lcd.setCursor(0, 1);
+    // print the number of seconds since reset:
+    float secondsFraction =  millis() / 1000.0F;
+    lcd.print(secondsFraction);
+  });
 }
 
 void loop() {
-  // set the cursor to column 0, line 1
-  // (note: line 1 is the second row, since counting begins with 0):
-  lcd.setCursor(0, 1);
-  // print the number of seconds since reset:
-  lcd.print(millis() / 1000);
+    taskManager.runLoop();
 }
 
 

@@ -6,22 +6,20 @@
  Hitachi HD44780 driver. There are many of them out there, and you
  can usually tell them by the 16-pin interface.
 
- This sketch prints "Hello World!" to the LCD
- and shows the time.
+ This sketch prints "Hello World!" to the LCD along with a counter
+ when the LCD device is connected via a shift register. Connect the
+ shift register and record the pins onto which it's connected. These
+ will be used to configure the shift register IoAbstraction. 
 
-  The circuit:
- * LCD RS pin to digital pin 12
- * LCD Enable pin to digital pin 11
- * LCD D4 pin to digital pin 5
- * LCD D5 pin to digital pin 4
- * LCD D6 pin to digital pin 3
- * LCD D7 pin to digital pin 2
- * LCD R/W pin to ground
- * LCD VSS pin to ground
- * LCD VCC pin to 5V
- * 10K resistor:
- * ends to +5V and ground
- * wiper to LCD VO pin (pin 3)
+ Be aware that the shift register support works by allowing you to
+ chain input and output shift registers together (up to 4 devices).
+ 
+ * Pins 0..31 represent the shift registers that are inputs
+ * Pins 32 onwards are the outputs.
+ * So the first output register's D0 pin would be pin 32.
+
+ To avoid hardwiring this value and protect against future changes
+ instead use the value SHIFT_REGISTER_OUTPUT_CUTOVER.
 
  Library originally added 18 Apr 2008
  by David A. Mellis
@@ -33,6 +31,7 @@
  by Tom Igoe
  modified 7 Nov 2016
  by Arturo Guadalupi
+ modified 2018 by Dave Cherry for shift register support.
 
  This example code is in the public domain.
 
@@ -43,14 +42,27 @@
 // include the library code:
 #include <LiquidCrystalIO.h>
 
+//
+// these are the pins onto which the shift register is connected to the arduino
+//
 #define WRITE_CLOCK_PIN 22
 #define WRITE_DATA_PIN 23
 #define WRITE_LATCH_PIN 24
 
+//
+// these are the shift register pins that you've connected your display to
+//
+const int rs = SHIFT_REGISTER_OUTPUT_CUTOVER + 0;
+const int en = SHIFT_REGISTER_OUTPUT_CUTOVER + 1;
+const int d4 = SHIFT_REGISTER_OUTPUT_CUTOVER + 2;
+const int d5 = SHIFT_REGISTER_OUTPUT_CUTOVER + 3;
+const int d6 = SHIFT_REGISTER_OUTPUT_CUTOVER + 4;
+const int d7 = SHIFT_REGISTER_OUTPUT_CUTOVER + 5;
 
-// initialize the library by associating any needed LCD interface pin
-// with the arduino pin number it is connected to
-const int rs = 24, en = 25, d4 = 26, d5 = 27, d6 = 28, d7 = 29;
+//
+// Construction is very similar to the regular library, the only difference is that we can choose to provide
+// a different means of reading and writing
+//
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7, outputOnlyFromShiftRegister(WRITE_CLOCK_PIN, WRITE_DATA_PIN, WRITE_LATCH_PIN));
 
 void setup() {
