@@ -4,10 +4,6 @@ This is a fork of the popular LiquidCrystal library for Arduino that supports my
 
 Another advantage of using this version with taskmanager is performance, there are signifant delays in the code that are needed to wait for the display, these have been converted to yield operations in task manager, so that other tasks can run during these times. The only restriction this brings is that all rendering must be done in *one task only* to avoid causing display corruption. 
 
-## Testing
-
-This fork has been tested on various 16x2 displays both directly connected and i2c, various 20x4 displays, again directly connected and i2c, using a shift register and also using a DfRobot shield.
-
 ## Installation
 
 The easiest way to install is via Arduino IDE Library Manager *Awaiting acceptance for this* . It will also install the dependant library IoAbstraction for you.
@@ -20,6 +16,10 @@ This library is 99% interchangeable with the original. Three extra examples have
 
 1. All internal delays beyond initialization are now performed using taskManager's yieldForMicros() method. Meaning that the delay does not interfere with task manager operation.
 2. It is possible to change the IO between any IoAbstraction supported device, be it Arduino pins, shift register or supported I2C device. This is provided as an extra parameter to the constructor.
+
+## Testing
+
+This fork has been tested on various 16x2 displays both directly connected and i2c, various 20x4 displays, again directly connected and i2c, using a shift register and also using a DfRobot shield.
 
 ## Original text:
 
