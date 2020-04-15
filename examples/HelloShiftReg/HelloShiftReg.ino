@@ -66,7 +66,7 @@ const int d7 = SHIFT_REGISTER_OUTPUT_CUTOVER + 5;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7, outputOnlyFromShiftRegister(WRITE_CLOCK_PIN, WRITE_DATA_PIN, WRITE_LATCH_PIN));
 
 void setup() {
-  // set up the LCD's number of columns and rows:
+  // set up the LCD's number of columns and rows, must be called.
   lcd.begin(16, 2);
   // Print a message to the LCD.
   lcd.print("hello, world!");

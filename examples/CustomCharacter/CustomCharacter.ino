@@ -28,6 +28,7 @@
  by Scott Fitzgerald
  modified 7 Nov 2016
  by Arturo Guadalupi
+ modified by Dave Cherry in 2018 for IoAbstraction fork.
 
  Based on Adafruit's example at
  https://github.com/adafruit/SPI_VFD/blob/master/examples/createChar/createChar.pde
@@ -35,21 +36,23 @@
  This example code is in the public domain.
  http://www.arduino.cc/en/Tutorial/LiquidCrystalCustomCharacter
 
- Also useful:
- http://icontexto.com/charactercreator/
-
 */
 
 // include the library code:
 #include <LiquidCrystalIO.h>
 
-// initialize the library by associating any needed LCD interface pin
-// with the arduino pin number it is connected to
-const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+// initialize the library by associating any needed LCD interface pins
+// in this case we set up for the ubiquitous  DfRobot shield
+const int rs = 8, en = 9, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
+
+// notice that when we create  the LCD, we don't need to provide an IoAbstraction
+// device, it in this case assumes that the pins are on the Arduino device itself.
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 // make some custom characters:
-byte heart[8] = {
+
+// We'll put the heart symbol into program memory instead of RAM.
+const byte heart[8] PROGMEM = {
   0b00000,
   0b01010,
   0b11111,
@@ -60,7 +63,8 @@ byte heart[8] = {
   0b00000
 };
 
-byte smiley[8] = {
+// we'll put the smiley in program memory instead of RAM
+const byte smiley[8] PROGMEM = {
   0b00000,
   0b00000,
   0b01010,
@@ -105,18 +109,20 @@ byte armsUp[8] = {
 };
 
 void setup() {
-  // initialize LCD and set up the number of columns and rows:
+  // when using the IoAbstraction version, you must always call begin in setup. It is not done for you
   lcd.begin(16, 2);
 
-  // create a new character
-  lcd.createChar(0, heart);
-  // create a new character
-  lcd.createChar(1, smiley);
-  // create a new character
+  // DfRobot backlight pin.
+  lcd.configureBacklightPin(10);
+  lcd.backlight();
+
+  // create two characters from program memory
+  lcd.createCharPgm(0, heart);
+  lcd.createCharPgm(1, smiley);
+
+  // create the other new characters from RAM
   lcd.createChar(2, frownie);
-  // create a new character
   lcd.createChar(3, armsDown);
-  // create a new character
   lcd.createChar(4, armsUp);
 
   // set the cursor to the top left

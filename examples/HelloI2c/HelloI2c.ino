@@ -49,8 +49,10 @@ void setup() {
   lcd.configureBacklightPin(3);
   lcd.backlight();
   
+  // for i2c variants, this must be called first.
   Wire.begin();
-  // set up the LCD's number of columns and rows:
+
+  // set up the LCD's number of columns and rows, must be called.
   lcd.begin(16, 2);
   // Print a message to the LCD.
   lcd.print("hello over i2c!");
