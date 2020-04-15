@@ -25,7 +25,7 @@ const int lcdWidth = 20;
 // now construct the display using IO from a 23017
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7, ioFrom23017(0x20));
 
-byte smiley[8] = {
+const byte smiley[8] PROGMEM = {
   0b00000,
   0b00000,
   0b01010,
@@ -61,7 +61,7 @@ void setup() {
  
   // set up the LCD's number of columns and rows:
   lcd.begin(20, 4);
-  lcd.createChar(1, smiley);
+  lcd.createCharPgm(1, smiley);
   lcd.setCursor(0,0);
   lcd.print("Counter in seconds");
 
@@ -76,17 +76,20 @@ void setup() {
     // set the cursor to column 0, line 1
     lcd.setCursor(0, 1);
 
-    // print the number of seconds since reset in tenths as a float:
-    float fractionalMillis = millis() / 100.0f;
+    // print the number of seconds since reset as a float:
+    float fractionalMillis = millis() / 1000.0f;
     lcd.print(fractionalMillis);
 
-    // now we move our custom character across the screen, clear the last place as we go.
+    // now in row 2 we move our custom character across the screen
+    // by first clearing the last position
     lcd.setCursor(oldPos,2);
     lcd.print(' ');
 
+    // find the next position (reset to 0 if need be)
     oldPos++;
     if(oldPos == lcdWidth) oldPos = 0;
 
+    // then print the character
     lcd.setCursor(oldPos,2);
     lcd.write(0x01);
   });
