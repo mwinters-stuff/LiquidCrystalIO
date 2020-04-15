@@ -15,10 +15,12 @@
 const int rs = 8, en = 9, d4 = 10, d5 = 11, d6 = 12, d7 = 13;
 
 // if you want to use the optional PWM contrast, you need to set the pin for it
-const int pwmContrastPin = 5;
+//const int pwmContrastPin = 5;
 
 // if you want to reset the 23017 other than hold it to Vcc, include this.
 const int resetPin23017 = 30;
+
+const int lcdWidth = 20;
 
 // now construct the display using IO from a 23017
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7, ioFrom23017(0x20));
@@ -42,8 +44,8 @@ void setup() {
   // if you don't want to bother connecting a potentiometer for contrast, instead see my example of
   // creating a PWM contrast circuit for the board, it's very simple see:
   // https://www.thecoderscorner.com/electronics/microcontrollers/driving-displays/90-wiring-a-20x4-character-display-to-an-arduino-board/
-  pinMode(pwmContrastPin, OUTPUT);
-  analogWrite(pwmContrastPin, 10);
+  //pinMode(pwmContrastPin, OUTPUT);
+  //analogWrite(pwmContrastPin, 10);
   // End PWM contrast.
 
   // this is optional, in a real world system you could probably just connect the
@@ -60,6 +62,7 @@ void setup() {
   // set up the LCD's number of columns and rows:
   lcd.begin(20, 4);
   lcd.createChar(1, smiley);
+  lcd.setCursor(0,0);
   lcd.print("Counter in seconds");
 
   //
@@ -82,7 +85,7 @@ void setup() {
     lcd.print(' ');
 
     oldPos++;
-    if(oldPos == LCD_WIDTH) oldPos = 0;
+    if(oldPos == lcdWidth) oldPos = 0;
 
     lcd.setCursor(oldPos,2);
     lcd.write(0x01);
