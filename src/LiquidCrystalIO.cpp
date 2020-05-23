@@ -3,7 +3,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
+#ifndef __MBED__
 #include "Arduino.h"
+#else
+#include "mbed.h"
+#include "stdint.h"
+#define pgm_read_byte_near(x) *x;
+#endif
+
+#include "LiquidCrystalIO.h"
 
 // When the display powers up, it is configured as follows:
 //
