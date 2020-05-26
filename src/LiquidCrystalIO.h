@@ -2,9 +2,7 @@
 #define LiquidCrystal_h
 
 #include <IoAbstraction.h>
-
 #include <inttypes.h>
-#include "Print.h"
 
 // commands
 #define LCD_CLEARDISPLAY 0x01
@@ -44,7 +42,12 @@
 #define LCD_5x10DOTS 0x04
 #define LCD_5x8DOTS 0x00
 
+#ifdef __MBED__
+class LiquidCrystal {
+#else
+#include "Print.h"
 class LiquidCrystal : public Print {
+#endif
 public:
   LiquidCrystal(uint8_t rs, uint8_t enable,
 		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
@@ -94,8 +97,14 @@ public:
   void setCursor(uint8_t, uint8_t); 
   virtual size_t write(uint8_t);
   void command(uint8_t);
-  
+
+#ifdef __MBED__
+  void print(const char* data);
+  void print(int data);
+#else
   using Print::write;
+#endif
+
 private:
   void send(uint8_t, uint8_t);
   void write4bits(uint8_t);

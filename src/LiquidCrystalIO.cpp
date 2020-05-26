@@ -1,16 +1,15 @@
-#include "LiquidCrystalIO.h"
-
-#include <stdio.h>
-#include <string.h>
-#include <inttypes.h>
 #ifndef __MBED__
 #include "Arduino.h"
 #else
 #include "mbed.h"
 #include "stdint.h"
 #define pgm_read_byte_near(x) *x;
+#define delayMicroseconds(x) (wait_us(x))
 #endif
 
+#include <stdio.h>
+#include <string.h>
+#include <inttypes.h>
 #include "LiquidCrystalIO.h"
 
 // When the display powers up, it is configured as follows:
@@ -101,7 +100,7 @@ void LiquidCrystal::setBacklight(uint8_t state) {
 }
 
 void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
-  if(_io_method == NULL) _io_method = ioUsingArduino();
+  if(_io_method == NULL) _io_method = internalDigitalIo();
 
   if (lines > 1) {
     _displayfunction |= LCD_2LINE;
@@ -130,7 +129,7 @@ void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
   // SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!
   // according to datasheet, we need at least 40ms after power rises above 2.7V
   // before sending commands. Arduino can turn on way before 4.5V so we'll wait 50
-  delayMicroseconds(50000); 
+  taskManager.yieldForMicros(50000);
   // Now we pull both RS and R/W low to begin commands
 
   _io_method->writeValue(_rs_pin, LOW);
@@ -147,15 +146,15 @@ void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 
     // we start in 8bit mode, try to set 4 bit mode
     write4bits(0x03);
-    delayMicroseconds(4500); // wait min 4.1ms
+    taskManager.yieldForMicros(4500); // wait min 4.1ms
 
     // second try
     write4bits(0x03);
-    delayMicroseconds(4500); // wait min 4.1ms
+    taskManager.yieldForMicros(4500); // wait min 4.1ms
     
     // third go!
-    write4bits(0x03); 
-    delayMicroseconds(150);
+    write4bits(0x03);
+    taskManager.yieldForMicros(150);
 
     // finally, set to 4-bit interface
     write4bits(0x02); 
@@ -165,11 +164,11 @@ void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 
     // Send function set command sequence
     command(LCD_FUNCTIONSET | _displayfunction);
-    delayMicroseconds(4500);  // wait more than 4.1ms
+    taskManager.yieldForMicros(4500);  // wait more than 4.1ms
 
     // second try
     command(LCD_FUNCTIONSET | _displayfunction);
-    delayMicroseconds(150);
+    taskManager.yieldForMicros(150);
 
     // third go
     command(LCD_FUNCTIONSET | _displayfunction);
@@ -319,6 +318,27 @@ inline size_t LiquidCrystal::write(uint8_t value) {
   send(value, HIGH);
   return 1; // assume sucess
 }
+
+#ifdef __MBED__
+
+//
+// On mbed we mimic some of the additional methods, not all that are in the print class.
+//
+
+void LiquidCrystal::print(const char *data) {
+    int len = strlen(data);
+    for(int i = 0; i < len; i++) {
+        write(data[i]);
+    }
+}
+
+void LiquidCrystal::print(int data) {
+    char sz[15];
+    itoa(data, sz, 10);
+    print(sz);
+}
+
+#endif
 
 /************ low level data pushing commands **********/
 

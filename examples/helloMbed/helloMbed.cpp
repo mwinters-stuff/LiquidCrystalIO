@@ -1,5 +1,7 @@
 /*
-  LiquidCrystal Library - Hello World for mbed over i2c
+  LiquidCrystal Library - Hello World for mbed over i2c.
+
+  *** NOTE this example is only for mbed framework. Most other examples are Arduino ***
 
   This assumes that an LCD display has been attached with a fairly regular I2C adapter
   it will count up from 0 onto the display once per second.
@@ -20,7 +22,7 @@ const int lcdHeight = 2;
 
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7, ioFrom8574(0x20));
 
-const byte smiley[8] = {
+const uint8_t smiley[8] = {
         0b00000,
         0b00000,
         0b01010,
