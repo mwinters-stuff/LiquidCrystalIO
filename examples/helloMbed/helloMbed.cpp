@@ -10,7 +10,7 @@
 #include <mbed.h>
 #include <IoAbstractionWire.h>
 #include <TaskManager.h>
-#include <LiquidCrystalIO.h>
+#include "LiquidCrystalIO.h"
 
 // set up the pins that you'll use with the i2cbackpack.
 // there's two common arrangement. RS RW EN and EN RW RS

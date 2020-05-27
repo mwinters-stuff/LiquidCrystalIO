@@ -61,6 +61,12 @@ void setup() {
  
   // set up the LCD's number of columns and rows:
   lcd.begin(20, 4);
+
+  // for the slower I2C bus we can remove the delay, as it takes longer than 40us to get there.
+  // 0 for 100Khz, 20 for 400khz, 40 for anything else (defaults to 40)
+  lcd.setDelayTime(0x00, 0);
+
+  // now create a custom character
   lcd.createCharPgm(1, smiley);
   lcd.setCursor(0,0);
   lcd.print("Counter in seconds");

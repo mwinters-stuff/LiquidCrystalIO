@@ -45,88 +45,153 @@
 #ifdef __MBED__
 class LiquidCrystal {
 #else
+
 #include "Print.h"
+
 class LiquidCrystal : public Print {
 #endif
 public:
-  LiquidCrystal(uint8_t rs, uint8_t enable,
-		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-		uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7, BasicIoAbstraction* ioMethod = NULL);
-  LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
-		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-		uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7, BasicIoAbstraction* ioMethod = NULL);
-  LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
-		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, BasicIoAbstraction* ioMethod = NULL);
-  LiquidCrystal(uint8_t rs, uint8_t enable,
-		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, BasicIoAbstraction* ioMethod = NULL);
+    enum BackLightPinMode { BACKLIGHT_NORMAL, BACKLIGHT_INVERTED, BACKLIGHT_PWM };
 
-  void init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t enable,
-	    uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-	    uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7, BasicIoAbstraction* ioMethod);
+    LiquidCrystal(uint8_t rs, uint8_t enable,
+                  uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
+                  uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7, BasicIoAbstraction *ioMethod = NULL);
 
-  void setIoAbstraction(IoAbstractionRef ioRef) {
-      _io_method = ioRef;
-  }
-  
-  void configureBacklightPin(uint8_t backlightPin);
-  void setBacklight(uint8_t state);
-  void backlight() { setBacklight(HIGH); }
-  void noBacklight() { setBacklight(LOW); }
-  
-  void begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS);
+    LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
+                  uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
+                  uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7, BasicIoAbstraction *ioMethod = NULL);
 
-  void clear();
-  void home();
+    LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
+                  uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, BasicIoAbstraction *ioMethod = NULL);
 
-  void noDisplay();
-  void display();
-  void noBlink();
-  void blink();
-  void noCursor();
-  void cursor();
-  void scrollDisplayLeft();
-  void scrollDisplayRight();
-  void leftToRight();
-  void rightToLeft();
-  void autoscroll();
-  void noAutoscroll();
+    LiquidCrystal(uint8_t rs, uint8_t enable,
+                  uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, BasicIoAbstraction *ioMethod = NULL);
 
-  void setRowOffsets(int row1, int row2, int row3, int row4);
-  void createChar(uint8_t, uint8_t[]);
-  void createCharPgm(uint8_t, const uint8_t[]);
-  void setCursor(uint8_t, uint8_t); 
-  virtual size_t write(uint8_t);
-  void command(uint8_t);
+    void init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t enable,
+              uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
+              uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7, BasicIoAbstraction *ioMethod);
+
+    /**
+     * Sets the device that will be used, IE where the LCD pins are connected to.
+     * @param ioRef the reference to an IO device previously created.
+     */
+    void setIoAbstraction(IoAbstractionRef ioRef) {
+        _io_method = ioRef;
+    }
+
+    /**
+     * Configure a backlight pin that is used to control the backlight using the setBacklight(level) function.
+     * Depending on the type of display you have this may be either:
+     *  * LiquidCrystal::BACKLIGHT_NORMAL - logic high for backlight on
+     *  * LiquidCrystal::BACKLIGHT_INVERTED - logic low for backlight on,
+     *  * LiquidCrystal::BACKLIGHT_PWN backlight pin in connected to a PWM pin and can dim.
+     * @param backlightPin the pin on which the backlight is connected
+     * @param mode one of the modes specified above
+     */
+    void configureBacklightPin(uint8_t backlightPin, BackLightPinMode mode = LiquidCrystal::BACKLIGHT_NORMAL);
+
+    /**
+     * Sets the delay for a given command, at this moment, this can only set the settle time of a standard command.
+     * @param command the command to set the delay for, presently only the settle time.
+     * @param settleTime the new value of the delay in microseconds.
+     */
+    void setDelayTime(uint8_t command, uint8_t settleTime) { _delayTime = max(1, settleTime); }
+
+    /**
+     * Unlike the regular display where this is option, in this variant you absolutely must call this function
+     * before use.
+     * @param cols the number of colums
+     * @param rows the number of rows
+     * @param charsize the character size, defaulted to 5x8
+     */
+    void begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS);
+
+    /**
+     * Clears the display completely using the clear command on the device, warning that this is a very slow
+     * call taking at least 2000 micros.
+     */
+    void clear();
+
+    /**
+     * Moves the display back to the home position, calling setCursor(0,0) is much faster.
+     */
+    void home();
+
+    void backlight() { setBacklight(HIGH); }
+
+    void noBacklight() { setBacklight(LOW); }
+
+    void setBacklight(uint8_t state);
+
+    void noDisplay();
+
+    void display();
+
+    void noBlink();
+
+    void blink();
+
+    void noCursor();
+
+    void cursor();
+
+    void scrollDisplayLeft();
+
+    void scrollDisplayRight();
+
+    void leftToRight();
+
+    void rightToLeft();
+
+    void autoscroll();
+
+    void noAutoscroll();
+
+    void setRowOffsets(int row1, int row2, int row3, int row4);
+
+    void createChar(uint8_t, uint8_t[]);
+
+    void createCharPgm(uint8_t, const uint8_t[]);
+
+    void setCursor(uint8_t, uint8_t);
+
+    virtual size_t write(uint8_t);
+
+    void command(uint8_t);
 
 #ifdef __MBED__
-  void print(const char* data);
-  void print(int data);
+    void print(const char* data);
+    void print(int data);
 #else
-  using Print::write;
+    using Print::write;
 #endif
 
 private:
-  void send(uint8_t, uint8_t);
-  void write4bits(uint8_t);
-  void write8bits(uint8_t);
-  void pulseEnable();
+    void send(uint8_t, uint8_t);
 
-  uint8_t _rs_pin; // LOW: command.  HIGH: character.
-  uint8_t _rw_pin; // LOW: write to LCD.  HIGH: read from LCD.
-  uint8_t _enable_pin; // activated by a HIGH pulse.
-  uint8_t _data_pins[8];
+    void write4bits(uint8_t);
 
-  uint8_t _displayfunction;
-  uint8_t _displaycontrol;
-  uint8_t _displaymode;
+    void write8bits(uint8_t);
 
-  uint8_t _initialized;
+    void pulseEnable();
 
-  uint8_t _numlines;
-  uint8_t _row_offsets[4];
-  uint8_t _backlightPin;
-  
-  BasicIoAbstraction* _io_method;
+    uint8_t _rs_pin; // LOW: command.  HIGH: character.
+    uint8_t _rw_pin; // LOW: write to LCD.  HIGH: read from LCD.
+    uint8_t _enable_pin; // activated by a HIGH pulse.
+    uint8_t _data_pins[8];
+
+    uint8_t _displayfunction;
+    uint8_t _displaycontrol;
+    uint8_t _displaymode;
+
+    uint8_t _delayTime;
+    BackLightPinMode _backlightMode;
+    uint8_t _backlightPin;
+
+    uint8_t _numlines;
+    uint8_t _row_offsets[4];
+
+    BasicIoAbstraction *_io_method;
 };
 
 #endif
