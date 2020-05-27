@@ -2,11 +2,11 @@
 
 This is a fork of the popular LiquidCrystal library for Arduino that supports my simple IOAbstraction framework (https://github.com/davetcc/IoAbstraction)  for supporting different Io Expanders and Task Manager. As a result it works for Arduino pins, Chained Shift Registers, PCF8574 I2C Expander and MCP23017 I2C expander. In addition, all delays in the library also use the task manager yield function, meaning they do not hold up execution of other tasks.
 
-The main advantage of using this version with task manager is performance, there are significant delays in the library code that are needed to wait for the display, these have been converted to yield operations in task manager, so that other tasks can run during these times. The only restriction this brings is that all rendering must be done in *one task only* to avoid causing display corruption. 
+The only advantage of using this version is with task manager because it calls into task manager after every character is written, there are significant delays in the library code that are needed to wait for the display, these have been converted to yield operations in task manager, so that other tasks can run during these times. The only restriction this brings is that all rendering must be done in *one task only* to avoid causing display corruption. 
 
 ## Installation
 
-The easiest way to install is via Arduino IDE Library Manager *Awaiting acceptance for this* . It will also install the dependant library IoAbstraction for you.
+The easiest way to install is via Arduino IDE Library Manager. It will also install the dependant library IoAbstraction for you.
 
 If you decide to manually install - not recommended, copy this library to your libraries folder and then make sure that you have IoAbstraction library installed too. (https://github.com/davetcc/IoAbstraction)
 
