@@ -43,6 +43,10 @@
 #define LCD_5x8DOTS 0x00
 
 #ifdef __MBED__
+#ifndef HEX
+#define HEX 2
+#define DEC 1
+#endif
 class LiquidCrystal {
 #else
 
@@ -95,7 +99,7 @@ public:
      * @param command the command to set the delay for, presently only the settle time.
      * @param settleTime the new value of the delay in microseconds.
      */
-    void setDelayTime(uint8_t command, uint8_t settleTime) { _delayTime = max(1, settleTime); }
+    void setDelayTime(uint8_t command, uint8_t settleTime) { _delayTime = (settleTime > 1) ? settleTime : 1; }
 
     /**
      * Unlike the regular display where this is option, in this variant you absolutely must call this function
@@ -149,7 +153,7 @@ public:
 
     void setRowOffsets(int row1, int row2, int row3, int row4);
 
-    void createChar(uint8_t, uint8_t[]);
+    void createChar(uint8_t, const uint8_t[]);
 
     void createCharPgm(uint8_t, const uint8_t[]);
 
@@ -161,7 +165,9 @@ public:
 
 #ifdef __MBED__
     void print(const char* data);
-    void print(int data);
+    void print(char data);
+    void print(int data, int mode = DEC);
+    void print(double dbl);
 #else
     using Print::write;
 #endif

@@ -295,7 +295,7 @@ void LiquidCrystal::noAutoscroll(void) {
 
 // Allows us to fill the first 8 CGRAM locations
 // with custom characters
-void LiquidCrystal::createChar(uint8_t location, uint8_t charmap[]) {
+void LiquidCrystal::createChar(uint8_t location, const uint8_t charmap[]) {
     location &= 0x7; // we only have 8 locations 0-7
     command(LCD_SETCGRAMADDR | (location << 3));
     for (int i = 0; i < 8; i++) {
@@ -338,12 +338,28 @@ void LiquidCrystal::print(const char *data) {
     }
 }
 
-void LiquidCrystal::print(int data) {
+void LiquidCrystal::print(char data) {
+    write(data);
+}
+
+void LiquidCrystal::print(int data, int mode) {
     char sz[15];
-    itoa(data, sz, 10);
+    itoa(data, sz, mode == HEX ? 16 : 10);
     print(sz);
 }
 
+void LiquidCrystal::print(double data) {
+    char sz[15];
+    int whole = (int) data;
+    int fraction = int((data - double(whole)) * 10000.0);
+
+    if(data < 0) print('-');
+    itoa(abs(whole), sz, 10);
+    print(sz);
+    print('.');
+    itoa(abs(fraction), sz, 10);
+    print(sz);
+}
 #endif
 
 /************ low level data pushing commands **********/
