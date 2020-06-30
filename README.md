@@ -1,14 +1,19 @@
 ## IoAbstraction Fork of Liquid Crystal Library for Arduino
 
-This is a fork of the popular LiquidCrystal library for Arduino that supports my simple IOAbstraction framework (https://github.com/davetcc/IoAbstraction)  for supporting different Io Expanders and Task Manager. As a result it works for Arduino pins, Chained Shift Registers, PCF8574 I2C Expander and MCP23017 I2C expander. In addition, all delays in the library also use the task manager yield function, meaning they do not hold up execution of other tasks.
+This is a fork of the popular LiquidCrystal library for Arduino that supports my simple IOAbstraction framework (https://github.com/davetcc/IoAbstraction)  for supporting different Io Expanders and Task Manager. As a result it works for Arduino pins, Chained Shift Registers, PCF8574 I2C Expander and MCP23017 I2C expander. In addition, all delays in the library also use the task manager yield function, meaning they do not hold up execution of other tasks. As of V1.3 it is compatible with mbed RTOS framework as long as it is used with at least IoAbstraction 1.5.0, there is an example for mbed shipped with the library.
 
-The only advantage of using this version is with task manager because it calls into task manager after every character is written, there are significant delays in the library code that are needed to wait for the display, these have been converted to yield operations in task manager, so that other tasks can run during these times. The only restriction this brings is that all rendering must be done in *one task only* to avoid causing display corruption. 
+The main advantage of using this version is with task manager because it calls into task manager after every character is written, there are significant delays in the library code that are needed to wait for the display, these have been converted to yield operations in task manager, so that other tasks can run during these times. The only restriction this brings is that all rendering must be done in *one task only* to avoid causing display corruption. 
 
 ## Installation
 
+### Install for Arduino
 The easiest way to install is via Arduino IDE Library Manager. It will also install the dependant library IoAbstraction for you.
 
 If you decide to manually install - not recommended, copy this library to your libraries folder and then make sure that you have IoAbstraction library installed too. (https://github.com/davetcc/IoAbstraction)
+
+### Install for PlatformIO (Arduino or mbed):
+
+Install from the platformIO library manager.
 
 ## Changes from the original version of LiquidCrystal
 
