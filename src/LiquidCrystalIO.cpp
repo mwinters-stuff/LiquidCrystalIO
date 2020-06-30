@@ -99,6 +99,7 @@ void LiquidCrystal::setBacklight(uint8_t state) {
 #ifndef __MBED__
     if (_backlightMode == BACKLIGHT_PWM) {
         analogWrite(_backlightPin, state);
+        return;
     }
 #endif
     if (_backlightMode == BACKLIGHT_INVERTED) state = !state;
