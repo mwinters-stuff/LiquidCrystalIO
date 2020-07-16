@@ -42,7 +42,7 @@
 #define LCD_5x10DOTS 0x04
 #define LCD_5x8DOTS 0x00
 
-#ifdef __MBED__
+#ifndef IOA_USE_ARDUINO
 #ifndef HEX
 #define HEX 2
 #define DEC 1
@@ -163,7 +163,7 @@ public:
 
     void command(uint8_t);
 
-#ifdef __MBED__
+#ifdef IOA_USE_MBED
     void print(const char* data);
     void print(char data);
     void print(int data, int mode = DEC);

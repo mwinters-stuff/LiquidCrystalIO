@@ -1,5 +1,6 @@
-#ifndef __MBED__
+#include <PlatformDetermination.h>
 
+#ifdef IOA_USE_ARDUINO
 #include "Arduino.h"
 
 #else
@@ -96,7 +97,7 @@ void LiquidCrystal::configureBacklightPin(uint8_t backlightPin, BackLightPinMode
 void LiquidCrystal::setBacklight(uint8_t state) {
     if (_backlightPin == 0xff) return;
 
-#ifndef __MBED__
+#ifdef IOA_USE_ARDUINO
     if (_backlightMode == BACKLIGHT_PWM) {
         analogWrite(_backlightPin, state);
         return;
@@ -326,7 +327,7 @@ inline size_t LiquidCrystal::write(uint8_t value) {
     return 1; // assume sucess
 }
 
-#ifdef __MBED__
+#ifdef IOA_USE_MBED
 
 //
 // On mbed we mimic some of the additional methods, not all that are in the print class.
