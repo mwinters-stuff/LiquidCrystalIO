@@ -1,6 +1,6 @@
-## IoAbstraction Fork of Liquid Crystal Library for Arduino
-
-This is a fork of the popular LiquidCrystal library for Arduino that supports my simple IOAbstraction framework (https://github.com/davetcc/IoAbstraction)  for supporting different Io Expanders and Task Manager. As a result it works for Arduino pins, Chained Shift Registers, PCF8574 I2C Expander and MCP23017 I2C expander. In addition, all delays in the library also use the task manager yield function, meaning they do not hold up execution of other tasks. As of V1.3 it is compatible with mbed RTOS framework as long as it is used with at least IoAbstraction 1.5.0, there is an example for mbed shipped with the library.
+## IoAbstraction Fork of Liquid Crystal Library for Arduino and mbed
+ 
+This is a fork of the popular LiquidCrystal library that works with a wide range of Arduino and mbed boards. It's been refactored to work alongside IOAbstraction framework (https://github.com/davetcc/IoAbstraction) so it supports direct pin connection, I2C via PCF8574, I2C via MCP23017, shift registers, and other supported expansion devices. All delays yield to TaskManager meaning that other tasks can run during these delays. As of V1.3 it is compatible with mbed RTOS framework as long as it is used with at least IoAbstraction 1.5.0, there is an example for mbed shipped with the library.
 
 The main advantage of using this version is with task manager because it calls into task manager after every character is written, there are significant delays in the library code that are needed to wait for the display, these have been converted to yield operations in task manager, so that other tasks can run during these times. The only restriction this brings is that all rendering must be done in *one task only* to avoid causing display corruption. 
 
@@ -13,16 +13,16 @@ If you decide to manually install - not recommended, copy this library to your l
 
 ### Install for PlatformIO (Arduino or mbed):
 
-Install from the platformIO library manager.
+Install [LiquidCrystalIO from the platformIO library manager](https://platformio.org/lib/show/7242/LiquidCrystalIO).
 
 ## Changes from the original version of LiquidCrystal
 
-This library is 99% interchangeable with the original. Three extra examples have been added that demonstrate how to configure this library with various types of I2C device and a shift register. The difference are:
+This library is 99% interchangeable with the original and we are working towards LCDAPI compliance as much as possible. Several extra examples have been added that demonstrate how to configure this library with various types of I2C device and a shift register. The difference are:
 
-1. All internal delays beyond initialization are now performed using taskManager's yieldForMicros() method. Meaning that the delay does not interfere with task manager operation. There is no external difference for this. However, you must make sure that only one task updates your display if you choose to use task manager.
-2. It is possible to change the IO between any IoAbstraction supported device, be it Arduino pins, shift register or supported I2C device. This is provided as an extra parameter to the constructor which defaults to Arduino pins. See examples HelloI2c, HelloShiftReg and Counter23017
+1. All internal delays beyond initialization are now performed using taskManager's yieldForMicros() method. Meaning that the delay does not interfere with task manager operation. There is no external difference for this. **However, you must make sure that only one task updates your display if you choose to use task manager.**
+2. It is possible to change the IO between any IoAbstraction supported device, be it Arduino pins, shift register or supported I2C devices such as MCP23017 and PCF8574 backpacks. This is provided as an extra parameter to the constructor (defaults to Arduino pins). See examples HelloI2c, HelloShiftReg and Counter23017
 3. Supports creating characters in program memory using createCharPgm(charNumber, pgmBytes), see the modified CustomCharacter example.
-4. Inbuilt support for backlight via methods: configureBacklight(pin), backlight(), noBacklight() and setBacklight(onOrOff).
+4. Inbuilt support for backlight via methods: configureBacklight(pin), backlight(), noBacklight() and setBacklight(onOrOff). The backlight can be PWM on Arduino.
 
 ## Testing
 
