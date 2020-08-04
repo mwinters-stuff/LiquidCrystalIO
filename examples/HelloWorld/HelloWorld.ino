@@ -8,20 +8,8 @@
 
  This sketch prints "Hello World!" to the LCD
  and shows the time.
-
-  The circuit:
- * LCD RS pin to digital pin 12
- * LCD Enable pin to digital pin 11
- * LCD D4 pin to digital pin 5
- * LCD D5 pin to digital pin 4
- * LCD D6 pin to digital pin 3
- * LCD D7 pin to digital pin 2
- * LCD R/W pin to ground
- * LCD VSS pin to ground
- * LCD VCC pin to 5V
- * 10K resistor:
- * ends to +5V and ground
- * wiper to LCD VO pin (pin 3)
+ 
+ It is defaulting to dfRobot LCD sheild pins
 
  Library originally added 18 Apr 2008
  by David A. Mellis
@@ -35,9 +23,8 @@
  by Arturo Guadalupi
 
  This example code is in the public domain.
-
  http://www.arduino.cc/en/Tutorial/LiquidCrystalHelloWorld
-
+ 
 */
 
 // include the library code:
