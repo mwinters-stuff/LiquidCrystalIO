@@ -23,26 +23,23 @@ modified by Dave Cherry in 2018 to demo I2C backpack support.
 */
 
 // include the library code:
+#include <Arduino.h>
 #include <LiquidCrystalIO.h>
+
+// When using the I2C version, these two extra includes are always needed. Doing this reduces the memory slightly for
+// users that are not using I2C.
 #include <IoAbstractionWire.h>
 #include <Wire.h>
 
-// initialize the library by associating any needed LCD interface pin
-// with the arduino pin number it is connected to, there are two
-// common possibilities
+// For most standard I2C backpacks one of the two helper functions below will create you a liquid crystal instance
+// that's ready configured for I2C. Important Note: this method assumes a PCF8574 running at 100Khz. If otherwise
+// use a custom configuration as you see in many other examples.
 
-// set this according to your backpack. If it has RS on pin 0 set to true, otherwise false.
-// if unsure, try both! If it's really non standard, you can set the pins as needed!
-#define RS_RW_EN true
+// If your backpack is wired RS,RW,EN then use this version
+LiquidCrystalI2C_RS_EN(lcd, 0x20, false)
 
-#if RS_RW_EN == true
-// if the backpack you have has the RS pin on 0 and the EN pin on 2.
-const int rs = 0, rw = 1, en = 2, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
-#else
-// if the backpack you have has the RS pin on 2 and the EN pin on 0.
-const int rs = 2, en = 0, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
-#endif
-LiquidCrystal lcd(rs, rw, en, d4, d5, d6, d7, ioFrom8574(0x20));
+// If your backpack is wired EN,RW,RS then use this version instead of the above.
+//LiquidCrystalI2C_EN_RS(lcd, 0x20, false)
 
 void setup() {
   // most backpacks have the backlight on pin 3.

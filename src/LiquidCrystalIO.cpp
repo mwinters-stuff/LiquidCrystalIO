@@ -1,13 +1,10 @@
 #include <PlatformDetermination.h>
 
-#ifdef IOA_USE_ARDUINO
-#include "Arduino.h"
-
-#else
-#include "mbed.h"
-#include "stdint.h"
-#define pgm_read_byte_near(x) *x;
-#define delayMicroseconds(x) (wait_us(x))
+#ifdef IOA_USE_MBED
+# include <cstdint>
+# include <PrintCompat.h>
+# define pgm_read_byte_near(x) *x;
+# define delayMicroseconds(x) (wait_us(x))
 #endif
 
 #include <stdio.h>
@@ -44,6 +41,26 @@ LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t enable,
                              uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
                              uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7, BasicIoAbstraction *ioMethod) {
     init(0, rs, 255, enable, d0, d1, d2, d3, d4, d5, d6, d7, ioMethod);
+}
+
+// df robot constructor need no args
+LiquidCrystal::LiquidCrystal() {
+    init(1, 8, 0xff, 9, 4, 5, 6, 7, 0, 0, 0, 0, nullptr);
+    configureBacklightPin(10);
+    backlight();
+}
+
+// I2C backback constructor
+LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t en, uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
+              LiquidCrystal::BackLightPinMode mode, IoAbstractionRef ioMethod) {
+    init(1, rs, rw, en, d0, d1, d2, d3, 0, 0, 0, 0, ioMethod);
+
+    // nearly all I2C backpacks have backlight on pin 3
+    configureBacklightPin(3, mode);
+    backlight();
+
+    // and they all use PCF8574 which is limited to 100khz, the delay can be removed.
+    setDelayTime(0x00, 0);
 }
 
 LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
@@ -315,7 +332,6 @@ void LiquidCrystal::createCharPgm(uint8_t location, const uint8_t charmap[]) {
     }
 }
 
-
 /*********** mid level commands, for sending data/cmds */
 
 inline void LiquidCrystal::command(uint8_t value) {
@@ -326,43 +342,6 @@ inline size_t LiquidCrystal::write(uint8_t value) {
     send(value, HIGH);
     return 1; // assume sucess
 }
-
-#ifdef IOA_USE_MBED
-
-//
-// On mbed we mimic some of the additional methods, not all that are in the print class.
-//
-
-void LiquidCrystal::print(const char *data) {
-    int len = strlen(data);
-    for(int i = 0; i < len; i++) {
-        write(data[i]);
-    }
-}
-
-void LiquidCrystal::print(char data) {
-    write(data);
-}
-
-void LiquidCrystal::print(int data, int mode) {
-    char sz[15];
-    itoa(data, sz, mode == HEX ? 16 : 10);
-    print(sz);
-}
-
-void LiquidCrystal::print(double data) {
-    char sz[15];
-    int whole = (int) data;
-    int fraction = int((data - double(whole)) * 10000.0);
-
-    if(data < 0) print('-');
-    itoa(abs(whole), sz, 10);
-    print(sz);
-    print('.');
-    itoa(abs(fraction), sz, 10);
-    print(sz);
-}
-#endif
 
 /************ low level data pushing commands **********/
 

@@ -30,10 +30,9 @@
 // include the library code:
 #include <LiquidCrystalIO.h>
 
-// initialize the library by associating any needed LCD interface pin
-// with the arduino pin number it is connected to
-const int rs = 8, en = 9, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+// This example initialises for DfRobot, it's the simplest case in LiquidCrystalIO and requires no parameters, because
+// we know upfront what the pin configuration is. See other examples for how to provide pin parameters.
+LiquidCrystal lcd;
 
 void setup() {
   // set up the LCD's number of columns and rows:
