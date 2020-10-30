@@ -6,9 +6,45 @@
 #include <TaskManagerIO.h>
 #include <LiquidCrystalIO.h>
 
+const int outputPin = 11;
+
 // This example initialises for DfRobot, it's the simplest case in LiquidCrystalIO and requires no parameters, because
 // we know upfront what the pin configuration is. See other examples for how to provide pin parameters.
 LiquidCrystal lcd;
+
+/**
+ * here we simulate a slow PWM for the heater, basically the timeOfNextCheck replaces delay in that exec() will
+ * be called at interval because we always trigger the event. We never call delay in task manager. this gives us
+ * a delay that can be customized each time around.
+ */
+class HeaterDriver : public BaseEvent {
+private:
+    int heaterPowerPercent;
+    bool isOnNow;
+public:
+    /**
+     * Called by task manager every time the number of microseconds previous returned expires. IE you can use this
+     * like a delay, if you trigger in here, then exec() gets called.
+     * @return the number of microseconds before calling this function again.
+     */
+    uint32_t timeOfNextCheck() override {
+        // here you'd work out when you should next be called back
+        setTriggered(true);
+        return millisToMicros(heaterPowerPercent * 100);
+    }
+
+    /**
+     * Called when the event is triggered
+     */
+    void exec() override {
+        digitalWrite(outputPin, isOnNow);
+        isOnNow = !isOnNow;
+    }
+
+    void setHeaterPower(int percent) {
+        heaterPowerPercent = percent;
+    }
+} heaterDriver;
 
 /**
  * Here we create an event that handles all the drawing for an application, in this case printing out readings
@@ -81,6 +117,8 @@ void setup() {
     lcd.setCursor(0,1);
     lcd.print("Temp:");
 
+    pinMode(outputPin, OUTPUT);
+
     // we create a watchdog task that simulates reading a sensor state and updating the drawing event.
     taskManager.scheduleFixedRate(50, [] {
         // this simulates a reading from your system that needs to be displayed, we run this in it's own task
@@ -90,12 +128,24 @@ void setup() {
     }, TIME_MILLIS);
 
     // here we create a couple of tasks that represent triggering and clearing an emergency.
-    taskManager.scheduleOnce(10, [] { drawingEvent.triggerEmergency(true);}, TIME_SECONDS);
-    taskManager.scheduleOnce(30, [] { drawingEvent.triggerEmergency(false);}, TIME_SECONDS);
+    taskManager.scheduleOnce(10, [] {
+        drawingEvent.triggerEmergency(true);
+    }, TIME_SECONDS);
+
+    taskManager.scheduleOnce(30, [] {
+        drawingEvent.triggerEmergency(false);
+    }, TIME_SECONDS);
+
+    heaterDriver.setHeaterPower(10);
+
+    taskManager.scheduleFixedRate(10, [] {
+        heaterDriver.setHeaterPower(rand() % 100);
+    }, TIME_SECONDS);
 
     // create any other tasks that you need here for your sketch
 
     taskManager.registerEvent(&drawingEvent);
+    taskManager.registerEvent(&heaterDriver);
 }
 
 void loop() {
