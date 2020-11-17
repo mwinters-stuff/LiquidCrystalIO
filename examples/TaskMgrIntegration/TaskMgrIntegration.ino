@@ -30,7 +30,7 @@ public:
     uint32_t timeOfNextCheck() override {
         // here you'd work out when you should next be called back
         setTriggered(true);
-        return millisToMicros(heaterPowerPercent * 100);
+        return millisToMicros((heaterPowerPercent * 100) + 50); // never allow 0 return repeatedly
     }
 
     /**
