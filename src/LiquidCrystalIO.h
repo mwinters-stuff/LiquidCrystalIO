@@ -56,6 +56,9 @@
  * and device pins with the same library. Heavily based on the original Arduino version of the library.
  */
 
+// a forward reference to the analog device
+class AnalogDevice;
+
 /**
  * LiquidCrystalIO library works with displays that are compatible with the HD44780 driver. It is derived from the
  * Arduino version, but it supports I2C backpacks and many other configurations. In addition it also uses taskmanager
@@ -218,6 +221,16 @@ public:
     void configureBacklightPin(uint8_t backlightPin, BackLightPinMode mode = LiquidCrystal::BACKLIGHT_NORMAL);
 
     /**
+     * This function gives more control over how the PWM/DAC/AnalogOut based backlight is configured, you can
+     * provide an analog device, you can specifically tell the analog device if it is PWM or DAC mode. For many
+     * cases the regular configureBacklightPin would work.
+     * @param analogDevice the analog device to use to set the backlight
+     * @param backlightPin the pin on which the backlight is set.
+     * @param isPinPwm if the pin on the provided device is a PWM or DAC pin
+     */
+    void configureAnalogBacklight(AnalogDevice* analogDevice, uint8_t backlightPin);
+
+    /**
      * Sets the delay for a given command, at this moment, this can only set the settle time of a standard command.
      * @param command the command to set the delay for, presently only the settle time.
      * @param settleTime the new value of the delay in microseconds.
@@ -339,7 +352,7 @@ public:
      * @return always 1
      * @param ch the character to write
      */
-    virtual size_t write(uint8_t ch);
+    size_t write(uint8_t ch) override;
 
     void command(uint8_t);
 
@@ -371,6 +384,7 @@ private:
     uint8_t _row_offsets[4];
 
     BasicIoAbstraction *_io_method;
+    AnalogDevice* _analog_device;
 };
 
 /**

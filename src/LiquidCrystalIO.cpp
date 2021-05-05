@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
+#include <AnalogDeviceAbstraction.h>
 #include "LiquidCrystalIO.h"
 
 // When the display powers up, it is configured as follows:
@@ -82,7 +83,8 @@ void LiquidCrystal::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t en
     _enable_pin = enable;
     _backlightPin = 0xff;
     _backlightMode = BACKLIGHT_NORMAL;
-    _io_method = ioMethod != NULL ? ioMethod : internalDigitalIo();
+    _io_method = ioMethod != nullptr ? ioMethod : internalDigitalIo();
+    _analog_device = nullptr;
     _delayTime = 40;
 
     _data_pins[0] = d0;
@@ -105,28 +107,39 @@ void LiquidCrystal::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t en
 }
 
 void LiquidCrystal::configureBacklightPin(uint8_t backlightPin, BackLightPinMode mode) {
+    if(mode == BACKLIGHT_PWM) {
+        configureAnalogBacklight(internalAnalogIo(), backlightPin);
+    }
+    else {
+        _backlightPin = backlightPin;
+        _backlightMode = mode;
+        ioDevicePinMode(_io_method, _backlightPin, OUTPUT);
+        backlight();
+    }
+}
+
+void LiquidCrystal::configureAnalogBacklight(AnalogDevice* analogDevice, uint8_t backlightPin) {
     _backlightPin = backlightPin;
-    _backlightMode = mode;
-    ioDevicePinMode(_io_method, _backlightPin, OUTPUT);
+    _backlightMode = BACKLIGHT_PWM;
+    _analog_device = (analogDevice != nullptr) ? analogDevice : internalAnalogIo();
+    _analog_device->initPin(backlightPin, DIR_PWM);
     backlight();
 }
 
 void LiquidCrystal::setBacklight(uint8_t state) {
     if (_backlightPin == 0xff) return;
 
-#ifdef IOA_USE_ARDUINO
-    if (_backlightMode == BACKLIGHT_PWM) {
-        analogWrite(_backlightPin, state);
-        return;
+    if (_backlightMode == BACKLIGHT_PWM && _analog_device) {
+        _analog_device->setCurrentFloat(_backlightPin, float(state) / 255.0F);
     }
-#endif
-    if (_backlightMode == BACKLIGHT_INVERTED) state = !state;
-
-    ioDeviceDigitalWrite(_io_method, _backlightPin, state);
+    else {
+        if (_backlightMode == BACKLIGHT_INVERTED) state = !state;
+        ioDeviceDigitalWrite(_io_method, _backlightPin, state);
+    }
 }
 
 void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
-    if (_io_method == NULL) _io_method = internalDigitalIo();
+    if (_io_method == nullptr) _io_method = internalDigitalIo();
 
     if (lines > 1) {
         _displayfunction |= LCD_2LINE;
@@ -280,34 +293,34 @@ void LiquidCrystal::blink() {
 }
 
 // These commands scroll the display without changing the RAM
-void LiquidCrystal::scrollDisplayLeft(void) {
+void LiquidCrystal::scrollDisplayLeft() {
     command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
 }
 
-void LiquidCrystal::scrollDisplayRight(void) {
+void LiquidCrystal::scrollDisplayRight() {
     command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
 }
 
 // This is for text that flows Left to Right
-void LiquidCrystal::leftToRight(void) {
+void LiquidCrystal::leftToRight() {
     _displaymode |= LCD_ENTRYLEFT;
     command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // This is for text that flows Right to Left
-void LiquidCrystal::rightToLeft(void) {
+void LiquidCrystal::rightToLeft() {
     _displaymode &= ~LCD_ENTRYLEFT;
     command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // This will 'right justify' text from the cursor
-void LiquidCrystal::autoscroll(void) {
+void LiquidCrystal::autoscroll() {
     _displaymode |= LCD_ENTRYSHIFTINCREMENT;
     command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // This will 'left justify' text from the cursor
-void LiquidCrystal::noAutoscroll(void) {
+void LiquidCrystal::noAutoscroll() {
     _displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
     command(LCD_ENTRYMODESET | _displaymode);
 }
@@ -363,7 +376,7 @@ void LiquidCrystal::send(uint8_t value, uint8_t mode) {
     taskManager.yieldForMicros(_delayTime);   // commands need > 37us to settle
 }
 
-void LiquidCrystal::pulseEnable(void) {
+void LiquidCrystal::pulseEnable() {
     _io_method->writeValue(_enable_pin, HIGH);
     _io_method->runLoop();
     delayMicroseconds(1);    // enable pulse must be >450ns
