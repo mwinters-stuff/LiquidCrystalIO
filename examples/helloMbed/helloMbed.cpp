@@ -12,7 +12,7 @@
 #include <TaskManager.h>
 #include "LiquidCrystalIO.h"
 
-// set up the pins that you'll use with the i2cbackpack.
+// set up the pins that you'll use with the i2c backpack.
 // there's two common arrangement. RS RW EN and EN RW RS
 const int rs = 0, en = 2, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
 //const int rs = 2, en = 1, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
@@ -20,7 +20,8 @@ const int rs = 0, en = 2, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
 const int lcdWidth = 16;
 const int lcdHeight = 2;
 
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7, ioFrom8574(0x20));
+I2C i2c(PF_0, PF_1);
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 const uint8_t smiley[8] = {
         0b00000,
@@ -36,7 +37,7 @@ const uint8_t smiley[8] = {
 int oldPos = 0;
 
 int main() {
-    Wire.begin();
+    lcd.setIoAbstraction(ioFrom8574(0x4E, 0xff, &i2c));
     lcd.configureBacklightPin(3);
     lcd.setBacklight(true);
 
@@ -65,7 +66,6 @@ int main() {
         // by first clearing the last position
         lcd.setCursor(oldPos,2);
         lcd.print(' ');
-
     });
 
     while(1) {
