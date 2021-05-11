@@ -134,7 +134,7 @@ void LiquidCrystal::setBacklight(uint8_t state) {
     }
     else {
         if (_backlightMode == BACKLIGHT_INVERTED) state = !state;
-        ioDeviceDigitalWrite(_io_method, _backlightPin, state);
+        ioDeviceDigitalWriteS(_io_method, _backlightPin, state);
     }
 }
 
