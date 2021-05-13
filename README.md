@@ -28,6 +28,35 @@ This library is 99% interchangeable with the original and we are working towards
 
 This fork has been tested on various 16x2 displays both directly connected and i2c, various 20x4 displays, again directly connected and i2c, using a shift register and also using a DfRobot shield.
 
+## Extra features over the original
+
+This libray has far greater control over the backlight than the original library. You can either use a pin on the same device (inverted or regular), or you can use PWM with an analog device, by default it would use the analog pin provided, but in future it could be an I2C DAC or potentiometer. See [davetcc/IoAbstraction] for more on analog devices.
+
+With this function you can set the backlight pin and set the mode to one of the below modes:
+
+    void configureBacklightPin(uint8_t backlightPin, BackLightPinMode mode = LiquidCrystal::BACKLIGHT_NORMAL);
+
+For the backlight mode parameter, provide one of:
+
+        BACKLIGHT_NORMAL, BACKLIGHT_INVERTED,  BACKLIGHT_PWM
+
+This function gives more control over PWM/Analog mode:
+
+    void configureAnalogBacklight(AnalogDevice* analogDevice, uint8_t backlightPin)
+    
+You can then call setBacklight to change the level for PWM, or turn on/off for digital pins.
+
+    setBacklight(uint8_t level);
+
+Simpler construction for regular I2C backpacks:
+
+    LiquidCrystalI2C_RS_EN(globalVariableName, i2cAddress, isBacklightInverted)
+    LiquidCrystalI2C_EN_RS(globalVariableName, i2cAddress, isBacklightInverted)
+
+Simpler DfRobot shield construction by constructing the object with no parameters. For example:
+
+    LiquidCrystal lcd;
+
 ## Original text:
 
 This library allows an Arduino board to control LiquidCrystal displays (LCDs) based on the Hitachi HD44780 (or a compatible) chipset, which is found on most text-based LCDs.
