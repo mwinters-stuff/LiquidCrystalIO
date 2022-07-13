@@ -56,10 +56,6 @@ LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t en, uint8_t d0, uin
               LiquidCrystal::BackLightPinMode mode, IoAbstractionRef ioMethod) {
     init(1, rs, rw, en, d0, d1, d2, d3, 0, 0, 0, 0, ioMethod);
 
-    // nearly all I2C backpacks have backlight on pin 3
-    configureBacklightPin(3, mode);
-    backlight();
-
     // and they all use PCF8574 which is limited to 100khz, the delay can be removed.
     setDelayTime(0x00, 0);
 }
@@ -226,7 +222,6 @@ void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
     _displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
     // set the entry mode
     command(LCD_ENTRYMODESET | _displaymode);
-
 }
 
 void LiquidCrystal::setRowOffsets(int row0, int row1, int row2, int row3) {

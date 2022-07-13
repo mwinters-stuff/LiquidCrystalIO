@@ -36,39 +36,46 @@ modified by Dave Cherry in 2018 to demo I2C backpack support.
 // use a custom configuration as you see in many other examples.
 
 // If your backpack is wired RS,RW,EN then use this version
-LiquidCrystalI2C_RS_EN(lcd, 0x20, false)
+LiquidCrystalI2C_RS_EN(lcd, 0x27, false)
 
 // If your backpack is wired EN,RW,RS then use this version instead of the above.
-//LiquidCrystalI2C_EN_RS(lcd, 0x20, false)
+//LiquidCrystalI2C_EN_RS(lcd, 0x27, false)
 
 void setup() {
-  // most backpacks have the backlight on pin 3.
-  lcd.configureBacklightPin(3);
-  lcd.backlight();
-  
-  // for i2c variants, this must be called first.
-  Wire.begin();
+    Serial.begin(115200);
+    Serial.println("Starting LCD example");
+    // for i2c variants, this must be called first.
+    Wire.begin();
 
-  // set up the LCD's number of columns and rows, must be called.
-  lcd.begin(16, 2);
-  // Print a message to the LCD.
-  lcd.print("hello over i2c!");
+    Serial.println("Configure LCD");
 
-  //
-  // when using this version of liquid crystal, it interacts (fairly) nicely with task manager. 
-  // instead of doing stuff in loop, we can schedule things to be done. But just be aware than
-  // only one task can draw to the display. Never draw to the display in two tasks.
-  //
-  // You don't have to use the library with task manager like this, it's an option.
-  //
-  taskManager.scheduleFixedRate(250, [] {
-    // set the cursor to column 0, line 1
-    // (note: line 1 is the second row, since counting begins with 0):
-    lcd.setCursor(0, 1);
-    // print the number of seconds since reset:
-    float secondsFraction =  millis() / 1000.0F;
-    lcd.print(secondsFraction);
-  });
+    // set up the LCD's number of columns and rows, must be called.
+    lcd.begin(16, 2);
+
+    // most backpacks have the backlight on pin 3.
+    lcd.configureBacklightPin(3);
+    lcd.backlight();
+
+    // Print a message to the LCD.
+    lcd.print("hello over i2c!");
+
+    //
+    // when using this version of liquid crystal, it interacts (fairly) nicely with task manager.
+    // instead of doing stuff in loop, we can schedule things to be done. But just be aware than
+    // only one task can draw to the display. Never draw to the display in two tasks.
+    //
+    // You don't have to use the library with task manager like this, it's an option.
+    //
+    taskManager.scheduleFixedRate(250, [] {
+        Serial.println("Set cursor & print");
+
+        // set the cursor to column 0, line 1
+        // (note: line 1 is the second row, since counting begins with 0):
+        lcd.setCursor(0, 1);
+        // print the number of seconds since reset:
+        float secondsFraction = millis() / 1000.0F;
+        lcd.print(secondsFraction);
+    });
 }
 
 void loop() {
