@@ -393,9 +393,9 @@ private:
  * include IoAbstractionWire.h before using.
  */
 #define LiquidCrystalI2C_RS_EN(var, addr, backlightInv) \
-    extern BasicIoAbstraction* ioFrom8574(uint8_t, pinid_t, WireType); \
+    extern BasicIoAbstraction* ioFrom8574(uint8_t, pinid_t, WireType, bool); \
     auto macro_backlight_tc = (backlightInv) ? LiquidCrystal::BACKLIGHT_INVERTED : LiquidCrystal::BACKLIGHT_NORMAL; \
-    LiquidCrystal var(0, 1, 2, 4, 5, 6, 7, macro_backlight_tc, ioFrom8574(addr, 0xff, &Wire));
+    LiquidCrystal var(0, 1, 2, 4, 5, 6, 7, macro_backlight_tc, ioFrom8574(addr, 0xff, &Wire, false));
 
 /**
  * Create a LiquidCrystal instance suitable for I2C backpacks that have the EN pin first. First parameter is the variable
@@ -403,8 +403,8 @@ private:
  * include IoAbstractionWire.h before using.
  */
 #define LiquidCrystalI2C_EN_RS(var, addr, backlightInv) \
-    extern BasicIoAbstraction* ioFrom8574(uint8_t, pinid_t, WireType); \
+    extern BasicIoAbstraction* ioFrom8574(uint8_t, pinid_t, WireType, bool); \
     auto macro_backlight_tc = (backlightInv) ? LiquidCrystal::BACKLIGHT_INVERTED : LiquidCrystal::BACKLIGHT_NORMAL; \
-    LiquidCrystal var(2, 1, 0, 4, 5, 6, 7, macro_backlight_tc, ioFrom8574(addr, 0xff, &Wire));
+    LiquidCrystal var(2, 1, 0, 4, 5, 6, 7, macro_backlight_tc, ioFrom8574(addr, 0xff, &Wire, false));
 
 #endif
