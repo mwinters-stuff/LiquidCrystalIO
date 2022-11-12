@@ -109,7 +109,7 @@ void LiquidCrystal::configureBacklightPin(uint8_t backlightPin, BackLightPinMode
     else {
         _backlightPin = backlightPin;
         _backlightMode = mode;
-        ioDevicePinMode(_io_method, _backlightPin, OUTPUT);
+        _io_method->pinMode(_backlightPin, OUTPUT);
         backlight();
     }
 }
@@ -130,7 +130,7 @@ void LiquidCrystal::setBacklight(uint8_t state) {
     }
     else {
         if (_backlightMode == BACKLIGHT_INVERTED) state = !state;
-        ioDeviceDigitalWriteS(_io_method, _backlightPin, state);
+        _io_method->digitalWriteS(_backlightPin, state);
     }
 }
 
@@ -148,16 +148,16 @@ void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
         _displayfunction |= LCD_5x10DOTS;
     }
 
-    _io_method->pinDirection(_rs_pin, OUTPUT);
+    _io_method->pinMode(_rs_pin, OUTPUT);
     // we can save 1 pin by not using RW. Indicate by passing 255 instead of pin#
     if (_rw_pin != 255) {
         _io_method->pinDirection(_rw_pin, OUTPUT);
     }
-    _io_method->pinDirection(_enable_pin, OUTPUT);
+    _io_method->pinMode(_enable_pin, OUTPUT);
 
     // Do these once, instead of every time a character is drawn for speed reasons.
     for (int i = 0; i < ((_displayfunction & LCD_8BITMODE) ? 8 : 4); ++i) {
-        _io_method->pinDirection(_data_pins[i], OUTPUT);
+        _io_method->pinMode(_data_pins[i], OUTPUT);
     }
 
     // SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!
@@ -171,7 +171,7 @@ void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
     if (_rw_pin != 255) {
         _io_method->writeValue(_rw_pin, LOW);
     }
-    _io_method->runLoop();
+    _io_method->sync();
 
     //put the LCD into 4 bit or 8 bit mode
     if (!(_displayfunction & LCD_8BITMODE)) {
@@ -372,23 +372,21 @@ void LiquidCrystal::send(uint8_t value, uint8_t mode) {
 }
 
 void LiquidCrystal::pulseEnable() {
-    _io_method->writeValue(_enable_pin, HIGH);
-    _io_method->runLoop();
+    _io_method->digitalWriteS(_enable_pin, HIGH);
     delayMicroseconds(1);    // enable pulse must be >450ns
-    _io_method->writeValue(_enable_pin, LOW);
-    _io_method->runLoop();
+    _io_method->digitalWriteS(_enable_pin, LOW);
 }
 
 void LiquidCrystal::write4bits(uint8_t value) {
     for (int i = 0; i < 4; i++) {
-        _io_method->writeValue(_data_pins[i], (value >> i) & 0x01);
+        _io_method->digitalWrite(_data_pins[i], (value >> i) & 0x01);
     }
     pulseEnable();
 }
 
 void LiquidCrystal::write8bits(uint8_t value) {
     for (int i = 0; i < 8; i++) {
-        _io_method->writeValue(_data_pins[i], (value >> i) & 0x01);
+        _io_method->digitalWrite(_data_pins[i], (value >> i) & 0x01);
     }
     pulseEnable();
 }
