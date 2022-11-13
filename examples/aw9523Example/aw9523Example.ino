@@ -92,7 +92,7 @@ void setup() {
 
     //
     // when using this version of liquid crystal, it interacts (fairly) nicely with task manager.
-    // instead of doing stuff in loop, we can schedule things to be done. But just be aware than
+    // instead of doing stuff in loop, we can schedule things to be done. But just be aware that
     // only one task can draw to the display. Never draw to the display in two tasks.
     //
     // You don't have to use the library with task manager like this, it's an option.
