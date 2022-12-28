@@ -52,7 +52,7 @@
 
 /**
  * @file LiquidCrystalIO.h
- * A fork of the LiquidCrystal library to take advantage of IoAbstraction, supporting I2C IoExpanders, Shift registers
+ * @brief A fork of the LiquidCrystal library to take advantage of IoAbstraction, supporting I2C IoExpanders, Shift registers
  * and device pins with the same library. Heavily based on the original Arduino version of the library.
  */
 
