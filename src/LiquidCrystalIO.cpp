@@ -369,6 +369,7 @@ void LiquidCrystal::send(uint8_t value, uint8_t mode) {
         write4bits(value);
     }
     taskManager.yieldForMicros(_delayTime);   // commands need > 37us to settle
+    //delayMicroseconds(_delayTime);
 }
 
 void LiquidCrystal::pulseEnable() {

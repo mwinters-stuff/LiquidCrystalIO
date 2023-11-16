@@ -1,12 +1,10 @@
 #ifndef LiquidCrystal_h
 #define LiquidCrystal_h
 
-#ifdef IOA_USE_MBED
+#if defined(IOA_USE_MBED) || defined(BUILD_FOR_PICO_CMAKE)
 #include "PrintCompat.h"
 #else
-
 #include "Print.h"
-
 #endif
 
 #include <IoAbstraction.h>
