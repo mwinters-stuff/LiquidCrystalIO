@@ -1,6 +1,6 @@
 ## IoAbstraction Fork of Liquid Crystal Library for Arduino and mbed
  
-This is a fork of the popular LiquidCrystal library that works with a wide range of Arduino and mbed boards. It's been refactored to work alongside IOAbstraction framework (https://github.com/davetcc/IoAbstraction) so it supports direct pin connection, I2C via PCF8574, I2C via MCP23017, shift registers, and other supported expansion devices. All delays yield to TaskManager meaning that other tasks can run during these delays. As of V1.3 it is compatible with mbed RTOS framework as long as it is used with at least IoAbstraction 1.5.0, there is an example for mbed shipped with the library.
+This is a fork of the popular LiquidCrystal library that works with a wide range of Arduino and mbed boards. It's been refactored to work alongside IOAbstraction framework (https://github.com/TcMenu/IoAbstraction) so it supports direct pin connection, I2C via PCF8574, I2C via MCP23017, shift registers, and other supported expansion devices. All delays yield to TaskManager meaning that other tasks can run during these delays. As of V1.3 it is compatible with mbed RTOS framework as long as it is used with at least IoAbstraction 1.5.0, there is an example for mbed shipped with the library.
 
 The main advantage of using this version is with task manager because it calls into task manager after every character is written, there are significant delays in the library code that are needed to wait for the display, these have been converted to yield operations in task manager, so that other tasks can run during these times. The only restriction this brings is that all rendering must be done in *one task only* to avoid causing display corruption. 
 
@@ -9,7 +9,7 @@ The main advantage of using this version is with task manager because it calls i
 ### Install for Arduino
 The easiest way to install is via Arduino IDE Library Manager. It will also install the dependant library IoAbstraction for you.
 
-If you decide to manually install - not recommended, copy this library to your libraries folder and then make sure that you have IoAbstraction library installed too. (https://github.com/davetcc/IoAbstraction)
+If you decide to manually install - not recommended, copy this library to your libraries folder and then make sure that you have IoAbstraction library installed too. (https://github.com/TcMenu/IoAbstraction)
 
 ### Install for PlatformIO (Arduino or mbed):
 
@@ -30,7 +30,7 @@ This fork has been tested on various 16x2 displays both directly connected and i
 
 ## Extra features over the original
 
-This libray has far greater control over the backlight than the original library. You can either use a pin on the same device (inverted or regular), or you can use PWM with an analog device, by default it would use the analog pin provided, but in future it could be an I2C DAC or potentiometer. See [davetcc/IoAbstraction] for more on analog devices.
+This libray has far greater control over the backlight than the original library. You can either use a pin on the same device (inverted or regular), or you can use PWM with an analog device, by default it would use the analog pin provided, but in future it could be an I2C DAC or potentiometer. See [TcMenu/IoAbstraction] for more on analog devices.
 
 With this function you can set the backlight pin and set the mode to one of the below modes:
 
